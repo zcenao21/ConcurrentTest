@@ -1,3 +1,5 @@
+package com.will.conc;
+
 import java.util.concurrent.CompletableFuture;
 
 public class CompletableFutureTest {

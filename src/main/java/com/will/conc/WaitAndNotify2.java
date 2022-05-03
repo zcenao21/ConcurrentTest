@@ -1,11 +1,15 @@
+package com.will.conc;
+
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class WaitAndNotify {
+public class WaitAndNotify2 {
     static Random random = new Random();
     public static void main(String[] args) throws InterruptedException {
         Runnable target;
-        final TaskQueueTest test = new TaskQueueTest();
+        final TaskQueueTest2 test = new TaskQueueTest2();
         for(int i=0;i<3;i++){
             final int finalI = i;
             Thread producer = new Thread(){
@@ -47,24 +51,37 @@ public class WaitAndNotify {
     }
 }
 
-class TaskQueueTest{
+class TaskQueueTest2{
     private int cnt = 0;
     private ArrayList<String> taskList = new ArrayList<String>();
+    ReentrantLock lock = new ReentrantLock();
+    Condition condition = lock.newCondition();
 
     public int getTasksCnt(){
         return taskList.size();
     }
-    public synchronized void putTask(String taskName){
-        System.out.println("User " + taskName + " put task " + cnt);
-        taskList.add(cnt++ + "");
-        this.notify();
+    public void putTask(String taskName){
+        lock.lock();
+        try{
+            System.out.println("User " + taskName + " put task " + cnt);
+            taskList.add(cnt++ + "");
+            condition.signal();
+        }finally {
+            lock.unlock();
+        }
     }
 
     public synchronized void exeTask(int taskNumber) throws InterruptedException {
-        while(taskList.isEmpty()){
-            this.wait();
+        lock.lock();
+        try{
+            while(taskList.isEmpty()){
+                condition.await();
+            }
+            System.out.println("Consumer " + taskNumber + " consume task " + taskList.get(0));
+            taskList.remove(0);
+        }finally {
+            lock.unlock();
         }
-        System.out.println("Consumer " + taskNumber + " consume task " + taskList.get(0));
-        taskList.remove(0);
+
     }
 }
