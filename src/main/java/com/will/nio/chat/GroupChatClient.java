@@ -77,6 +77,9 @@ public class GroupChatClient {
         Scanner scanner = new Scanner(System.in);
         while(scanner.hasNextLine()){
             String msg = scanner.next();
+            if(msg.startsWith("我要改名")){
+                client.userName = msg.split(":")[1];
+            }
             client.sendInfo(msg);
         }
     }
