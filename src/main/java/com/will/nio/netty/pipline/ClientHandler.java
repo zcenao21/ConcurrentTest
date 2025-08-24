@@ -26,6 +26,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		ctx.channel().writeAndFlush(buf);
 	}
 
+	//接收服务端消息
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		ByteBuf buf = (ByteBuf) msg;

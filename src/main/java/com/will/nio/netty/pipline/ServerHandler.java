@@ -1,5 +1,7 @@
 package com.will.nio.netty.pipline;
 
+import com.will.nio.netty.pipline.protocal.Packet;
+import com.will.nio.netty.pipline.protocal.PacketCodeC;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -10,8 +12,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		ByteBuf buf = (ByteBuf) msg;
-		System.out.println("服务端读到数据：" + buf.toString(Charset.forName("utf-8")));
-		ByteBuf bufOut = getBufOut(ctx);
+		Packet packet = PacketCodeC.INSTANCE.decode(buf);
+		//判断是否请求登录数据包
 		ctx.channel().writeAndFlush(bufOut);
 	}
 
