@@ -1,4 +1,4 @@
-package com.will.nio.netty;
+package com.will.nio.netty.pipline;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
