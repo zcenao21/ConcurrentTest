@@ -1,5 +1,7 @@
 package com.will.nio.netty.pipline;
 
+import com.will.nio.netty.pipline.protocal.LoginRequestPacket;
+import com.will.nio.netty.pipline.protocal.LoginResponsePacket;
 import com.will.nio.netty.pipline.protocal.Packet;
 import com.will.nio.netty.pipline.protocal.PacketCodeC;
 import io.netty.buffer.ByteBuf;
@@ -14,16 +16,29 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 		ByteBuf buf = (ByteBuf) msg;
 		Packet packet = PacketCodeC.INSTANCE.decode(buf);
 		//判断是否请求登录数据包
-		ctx.channel().writeAndFlush(bufOut);
+		if(packet instanceof LoginRequestPacket){
+			LoginRequestPacket loginRequestPacket = (LoginRequestPacket) packet;
+			LoginResponsePacket loginResponsePacket = new LoginResponsePacket();
+			loginResponsePacket.setVersion(packet.getVersion());
+			//登录校验
+			if(valid(loginRequestPacket)){
+				//校验成功
+				loginResponsePacket.setSuccess(true);
+				System.out.println("客户端登录成功");
+			} else {
+				//校验失败
+				loginResponsePacket.setReason("账号或密码错误");
+				loginResponsePacket.setSuccess(false);
+				System.out.println("客户端登录失败");
+			}
+			//编码，发送结果给客户端
+			ByteBuf responseByteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc(), loginResponsePacket);
+			ctx.channel().writeAndFlush(responseByteBuf);
+		}
 	}
 
-	private ByteBuf getBufOut(ChannelHandlerContext ctx) {
-		String msg = "我是服务器，收到你的消息了！";
-		byte[] bytes = msg.getBytes(Charset.forName("utf-8"));
-		ByteBuf buffer = ctx.alloc().buffer();
-		buffer.writeBytes(bytes);
-		System.out.println("服务端开始发送消息");
-		return buffer;
+	private boolean valid(LoginRequestPacket loginRequestPacket){
+		//查询数据库，登录校验
+		return true;
 	}
-
 }
