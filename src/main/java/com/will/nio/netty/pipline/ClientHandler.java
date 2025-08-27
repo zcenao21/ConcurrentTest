@@ -1,13 +1,13 @@
 package com.will.nio.netty.pipline;
 
-import com.will.nio.netty.pipline.protocal.LoginRequestPacket;
-import com.will.nio.netty.pipline.protocal.LoginResponsePacket;
-import com.will.nio.netty.pipline.protocal.Packet;
-import com.will.nio.netty.pipline.protocal.PacketCodeC;
+import com.will.nio.netty.pipline.protocal.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Random;
 
@@ -24,6 +24,22 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		ByteBuf buf = PacketCodeC.INSTANCE.encode(ctx.alloc(), loginRequestPacket);
 		//写数据
 		ctx.channel().writeAndFlush(buf);
+
+		new Thread(() -> {
+			while (true) {
+				try {
+					String s = new BufferedReader(new InputStreamReader(System.in)).readLine();
+					MessageRequestPacket messageRequestPacket = new MessageRequestPacket();
+					messageRequestPacket.setUserName("will");
+					messageRequestPacket.setMsg(s);
+					ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc(), messageRequestPacket);
+					ctx.channel().writeAndFlush(byteBuf);
+					System.out.println("发送消息成功！MSG:" + s);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 
 	//接收服务端消息
@@ -39,6 +55,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			} else {
 				System.out.println("登录失败,原因为："+loginResponsePacket.getReason());
 			}
+		}else if(packet instanceof MessageResponsePacket){
+			MessageResponsePacket messageResponsePacket = (MessageResponsePacket) packet;
+			System.out.println(messageResponsePacket.getMsgResponse());
 		}
 	}
 

@@ -1,9 +1,6 @@
 package com.will.nio.netty.pipline;
 
-import com.will.nio.netty.pipline.protocal.LoginRequestPacket;
-import com.will.nio.netty.pipline.protocal.LoginResponsePacket;
-import com.will.nio.netty.pipline.protocal.Packet;
-import com.will.nio.netty.pipline.protocal.PacketCodeC;
+import com.will.nio.netty.pipline.protocal.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -33,6 +30,15 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 			}
 			//编码，发送结果给客户端
 			ByteBuf responseByteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc(), loginResponsePacket);
+			ctx.channel().writeAndFlush(responseByteBuf);
+		}else if(packet instanceof MessageRequestPacket){
+			MessageRequestPacket requestPacket = (MessageRequestPacket) packet;
+			MessageResponsePacket messageResponsePacket = new MessageResponsePacket();
+			messageResponsePacket.setMsgReceived(requestPacket.getMsg());
+			String msgResponse = System.currentTimeMillis() + "服务端收到消息了";
+			System.out.println(msgResponse);
+			messageResponsePacket.setMsgResponse(msgResponse);
+			ByteBuf responseByteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc(), messageResponsePacket);
 			ctx.channel().writeAndFlush(responseByteBuf);
 		}
 	}
