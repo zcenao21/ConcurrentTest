@@ -1,5 +1,7 @@
 package com.will.nio.netty.pipline;
 
+import com.will.nio.netty.pipline.protocal.PacketDecoder;
+import com.will.nio.netty.pipline.protocal.PacketEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -16,8 +18,12 @@ public class NettyServer {
 				.channel(NioServerSocketChannel.class)
 				.childHandler(new ChannelInitializer<NioSocketChannel>() {
 					@Override
-					protected void initChannel(NioSocketChannel channel) throws Exception {
-						channel.pipeline().addLast(new ServerHandler());
+					protected void initChannel(NioSocketChannel ch) throws Exception {
+						ch.pipeline().addLast(new MyIdleStateHandler());
+						ch.pipeline().addLast(new PacketDecoder());
+						ch.pipeline().addLast(new ServerLoginHandler());
+						ch.pipeline().addLast(new HeartBeatRequestHandler());
+						ch.pipeline().addLast(new PacketEncoder());
 					}
 				});
 		serverBootstrap.bind(2121);

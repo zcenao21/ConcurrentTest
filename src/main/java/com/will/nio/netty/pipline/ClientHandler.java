@@ -21,7 +21,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		loginRequestPacket.setUserName("will");
 		loginRequestPacket.setPassword("pwd");
 		//编码
-		ByteBuf buf = PacketCodeC.INSTANCE.encode(ctx.alloc(), loginRequestPacket);
+		ByteBuf buf = PacketCodeC.INSTANCE.encode(ctx.alloc().buffer(), loginRequestPacket);
 		//写数据
 		ctx.channel().writeAndFlush(buf);
 
@@ -32,7 +32,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 					MessageRequestPacket messageRequestPacket = new MessageRequestPacket();
 					messageRequestPacket.setUserName("will");
 					messageRequestPacket.setMsg(s);
-					ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc(), messageRequestPacket);
+					ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc().buffer(), messageRequestPacket);
 					ctx.channel().writeAndFlush(byteBuf);
 					System.out.println("发送消息成功！MSG:" + s);
 				} catch (IOException e) {

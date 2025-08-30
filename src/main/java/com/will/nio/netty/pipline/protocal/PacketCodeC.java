@@ -24,14 +24,15 @@ public class PacketCodeC {
 		packetTypeMap.put(Command.LOGIN_RESPONSE, LoginResponsePacket.class);
 		packetTypeMap.put(Command.MSG_REQUEST, MessageRequestPacket.class);
 		packetTypeMap.put(Command.MSG_RESPONSE, MessageResponsePacket.class);
+		packetTypeMap.put(Command.HEARTBEAT_REQUEST, HeartBeatRequestPacket.class);
+		packetTypeMap.put(Command.HEARTBEAT_RESPONSE, HeartBeatResponsePacket.class);
 		serializerMap = new HashMap<>();
 		Serializer serializer = new JSONSerializer();
 		serializerMap.put(serializer.getSerializerAlgorithm(), serializer);
 	}
 
 	//编码
-	public ByteBuf encode(ByteBufAllocator byteBufAllocator, Packet packet){
-		ByteBuf byteBuf = byteBufAllocator.ioBuffer();
+	public ByteBuf encode(ByteBuf byteBuf, Packet packet){
 		//序列化java对象
 		byte[] bytes = Serializer.DEFAULT.serialize(packet);
 		//实际编码过程，将通信协议几个部分，一一编码

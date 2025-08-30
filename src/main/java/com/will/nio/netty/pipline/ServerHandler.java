@@ -29,7 +29,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 				System.out.println("客户端登录失败");
 			}
 			//编码，发送结果给客户端
-			ByteBuf responseByteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc(), loginResponsePacket);
+			ByteBuf responseByteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc().buffer(), loginResponsePacket);
 			ctx.channel().writeAndFlush(responseByteBuf);
 		}else if(packet instanceof MessageRequestPacket){
 			MessageRequestPacket requestPacket = (MessageRequestPacket) packet;
@@ -38,7 +38,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 			String msgResponse = System.currentTimeMillis() + "服务端收到消息了";
 			System.out.println(msgResponse);
 			messageResponsePacket.setMsgResponse(msgResponse);
-			ByteBuf responseByteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc(), messageResponsePacket);
+			ByteBuf responseByteBuf = PacketCodeC.INSTANCE.encode(ctx.alloc().buffer(), messageResponsePacket);
 			ctx.channel().writeAndFlush(responseByteBuf);
 		}
 	}
