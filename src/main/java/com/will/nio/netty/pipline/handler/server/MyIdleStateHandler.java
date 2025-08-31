@@ -1,4 +1,4 @@
-package com.will.nio.netty.pipline;
+package com.will.nio.netty.pipline.handler.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;

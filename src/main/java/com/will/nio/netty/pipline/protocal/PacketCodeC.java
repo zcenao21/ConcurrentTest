@@ -1,7 +1,6 @@
 package com.will.nio.netty.pipline.protocal;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 
 import java.util.HashMap;
 import java.util.Map;

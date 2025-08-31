@@ -1,4 +1,4 @@
-package com.will.nio.netty.pipline;
+package com.will.nio.netty.pipline.handler.client;
 
 import com.will.nio.netty.pipline.protocal.LoginRequestPacket;
 import com.will.nio.netty.pipline.protocal.LoginResponsePacket;

@@ -1,4 +1,4 @@
-package com.will.nio.netty.pipline;
+package com.will.nio.netty.pipline.handler.client;
 
 import com.will.nio.netty.pipline.protocal.HeartBeatRequestPacket;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,10 +18,12 @@ public class HeartBeatTimerHandler extends ChannelInboundHandlerAdapter {
 	private void scheduleSendHeartBeat(ChannelHandlerContext ctx) {
 		ctx.executor().schedule(() -> {
 			if (ctx.channel().isActive()) {
-				ctx.channel().writeAndFlush(new HeartBeatRequestPacket());
+				HeartBeatRequestPacket heartBeatRequestPacket = new HeartBeatRequestPacket();
+				heartBeatRequestPacket.setCurrClient(Thread.currentThread().toString());
+				ctx.channel().writeAndFlush(heartBeatRequestPacket);
 				scheduleSendHeartBeat(ctx);
 			}
-			System.out.println("发送心跳数据");
+			System.out.println(Thread.currentThread().toString() + "发送心跳数据");
 		},HEARTBEAT_INTERVAL , TimeUnit.SECONDS);
 	}
 }
