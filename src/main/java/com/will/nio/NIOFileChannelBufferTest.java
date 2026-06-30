@@ -13,11 +13,11 @@ import java.nio.channels.FileChannel;
  */
 public class NIOFileChannelBufferTest {
     public static void main(String[] args) throws IOException {
-        String say = "top chao!";
+        String say = "top will!";
         ByteBuffer buffer = ByteBuffer.allocate(10);
         buffer.put(say.getBytes());
         buffer.flip();
-        FileOutputStream stream = new FileOutputStream(new File("/home/will/out.txt"));
+        FileOutputStream stream = new FileOutputStream(new File("/Users/will/Desktop/note.txt"));
         FileChannel channel = stream.getChannel();
         channel.write(buffer);
         stream.close();
